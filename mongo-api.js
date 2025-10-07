@@ -8,7 +8,7 @@ const PORT = 4000;
 app.use(cors());
 app.use(express.json());
 
-const uri = "mongodb+srv://marialeang05_db_user:BoxjzpB97OhtQPgI@cluster-fbd.v5vgiro.mongodb.net/";
+const uri = process.env.MONGO_URI;
 const client = new MongoClient(uri);
 
 app.use(express.json());
