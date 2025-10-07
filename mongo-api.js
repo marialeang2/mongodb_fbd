@@ -1,20 +1,27 @@
 // mongo-api.js
 import express from "express";
-import { MongoClient } from "mongodb";
+import { MongoClient, ServerApiVersion } from "mongodb";
 import cors from "cors";
 
 const app = express();
-const PORT = 4000;
 app.use(cors());
 app.use(express.json());
 
+const PORT = process.env.PORT || 4000;
 const uri = process.env.MONGO_URI;
-const client = new MongoClient(uri);
 
-app.use(express.json());
+// Cliente Mongo con configuración recomendada para Render / Atlas
+const client = new MongoClient(uri, {
+  serverApi: {
+    version: ServerApiVersion.v1,
+    strict: true,
+    deprecationErrors: true,
+  },
+});
 
 let coleccion;
 
+// Conexión inicial a MongoDB
 async function conectarMongo() {
   try {
     await client.connect();
@@ -28,6 +35,12 @@ async function conectarMongo() {
 
 conectarMongo();
 
+// Ruta raíz (para probar que Render funciona)
+app.get("/", (req, res) => {
+  res.send("API Mongo desplegada correctamente en Render");
+});
+
+// Ruta para obtener documentos de la colección
 app.get("/api/sales", async (req, res) => {
   try {
     const resultados = await coleccion.find({}).limit(10).toArray();
@@ -40,5 +53,5 @@ app.get("/api/sales", async (req, res) => {
 
 // Iniciar servidor
 app.listen(PORT, () => {
-  console.log(`🚀 API Mongo corriendo en http://localhost:${PORT}/api/sales`);
+  console.log(`Servidor corriendo en puerto ${PORT}`);
 });
