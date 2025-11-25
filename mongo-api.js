@@ -26,7 +26,7 @@ async function conectarMongo() {
   try {
     await client.connect();
     const db = client.db("Parranderos");
-    commentsCollection = db.collection("comentarios");
+    coleccionComentarios = db.collection("comentarios");
     console.log("Conectado a MongoDB correctamente");
   } catch (error) {
     console.error("Error al conectar a MongoDB:", error);
