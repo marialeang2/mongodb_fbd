@@ -8,7 +8,8 @@ app.use(cors());
 app.use(express.json());
 
 const PORT = process.env.PORT || 4000;
-const uri = process.env.MONGO_URI;
+//const uri = process.env.MONGO_URI;
+const uri = "mongodb+srv://marialeang05_db_user:BoxjzpB97OhtQPgI@cluster-fbd.v5vgiro.mongodb.net/"
 
 // Cliente Mongo con configuración recomendada para Render / Atlas
 const client = new MongoClient(uri, {
@@ -26,7 +27,7 @@ async function conectarMongo() {
   try {
     await client.connect();
     const db = client.db("Parranderos");
-    coleccionComentarios = db.collection("comentarios");
+    coleccion = db.collection("comentarios");
     console.log("Conectado a MongoDB correctamente");
   } catch (error) {
     console.error("Error al conectar a MongoDB:", error);
@@ -43,7 +44,7 @@ app.get("/", (req, res) => {
 app.get("/api/comentarios/:bar_id", async (req, res) => {
   try {
     const barId = parseInt(req.params.bar_id);
-    const comentarios = await coleccionComentarios.find({ bar_id: barId }).toArray();
+    const comentarios = await coleccion.find({ bar_id: barId }).toArray();
     res.json(comentarios);
   } catch (error) {
     console.error("Error consultando comentarios:", error);
