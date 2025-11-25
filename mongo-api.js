@@ -25,8 +25,8 @@ let coleccion;
 async function conectarMongo() {
   try {
     await client.connect();
-    const db = client.db("sample_supplies");
-    coleccion = db.collection("sales");
+    const db = client.db("Parranderos");
+    commentsCollection = db.collection("comments");
     console.log("Conectado a MongoDB correctamente");
   } catch (error) {
     console.error("Error al conectar a MongoDB:", error);
@@ -40,16 +40,30 @@ app.get("/", (req, res) => {
   res.send("API Mongo desplegada correctamente en Render");
 });
 
-// Ruta para obtener documentos de la colección
-app.get("/api/sales", async (req, res) => {
+app.get("/api/comentarios/:bar_id", async (req, res) => {
   try {
-    const resultados = await coleccion.find({}).limit(10).toArray();
-    res.json(resultados);
+    const barId = parseInt(req.params.bar_id);
+    const comentarios = await coleccionComentarios.find({ bar_id: barId }).toArray();
+    res.json(comentarios);
   } catch (error) {
-    console.error("Error al consultar la colección:", error);
-    res.status(500).json({ error: "Error al consultar la colección" });
+    console.error("Error consultando comentarios:", error);
+    res.status(500).json({ error: "Error consultando comentarios" });
   }
 });
+
+
+app.post("/api/comments", async (req, res) => {
+  try {
+    const nuevo = req.body;
+    nuevo.date = new Date();
+
+    await commentsCollection.insertOne(nuevo);
+    res.json({ mensaje: "Comentario insertado" });
+  } catch (error) {
+    res.status(500).json({ error: "Error insertando comentario" });
+  }
+});
+
 
 // Iniciar servidor
 app.listen(PORT, () => {
