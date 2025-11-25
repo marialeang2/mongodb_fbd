@@ -26,7 +26,7 @@ async function conectarMongo() {
   try {
     await client.connect();
     const db = client.db("Parranderos");
-    commentsCollection = db.collection("comments");
+    commentsCollection = db.collection("comentarios");
     console.log("Conectado a MongoDB correctamente");
   } catch (error) {
     console.error("Error al conectar a MongoDB:", error);
@@ -52,7 +52,7 @@ app.get("/api/comentarios/:bar_id", async (req, res) => {
 });
 
 
-app.post("/api/comments", async (req, res) => {
+app.post("/api/comentarios", async (req, res) => {
   try {
     const nuevo = req.body;
     nuevo.date = new Date();
